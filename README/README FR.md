@@ -14,7 +14,7 @@ Client de bureau Windows pour Feiniu NAS, construit avec PySide6 + QtWebEngine.
 
 ## Aperçu de l’interface
 
-![](https://github.com/hbxdss/fn-desktop/blob/main/Image/qrcode_1784783442708.jpg)
+![](https://github.com/hbxdss/fn-desktop/blob/main/Image/1.png)
 
 ## Configuration système requise
 
