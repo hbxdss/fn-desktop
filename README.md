@@ -1,8 +1,8 @@
 # 选择语言 / Select language / Selecciona el idioma / Choisissez la langue / اختر اللغة
 
-* 🇨🇳 [简体中文](README/README_zh%E2%80%91CN.md)
-* 🇹🇼 [繁體中文](README/README_zh%E2%80%91TW.md)
-* 🇺🇸 [English](README/README_en.md)
-* 🇪🇸 [Español](README/README_es.md)
-* 🇫🇷 [Français](README/README_fr.md)
-* 🇸🇦 [العربية](README/README_ar.md)
+* 🇨🇳 [简体中文](https://github.com/hbxdss/fn-desktop/blob/main/README/README%20ZH-CN.md)
+* 🇹🇼 [繁體中文](https://github.com/hbxdss/fn-desktop/blob/main/README/README%20ZH-TW.md)
+* 🇺🇸 [English](https://github.com/hbxdss/fn-desktop/blob/main/README/README%20EN-US.md)
+* 🇪🇸 [Español](https://github.com/hbxdss/fn-desktop/blob/main/README/README%20ES.md)
+* 🇫🇷 [Français]([https://github.com/hbxdss/fn-desktop/blob/main/README/README%20FR.md)
+* 🇸🇦 [العربية](https://github.com/hbxdss/fn-desktop/blob/main/README/README%20AR%20.md)
