@@ -1,0 +1,11 @@
+# FN Desktop（飞牛桌面版）依赖清单
+# Python 3.10+（本机验证于 3.13）
+
+PySide6>=6.8.1,<7.0       # Qt for Python：主窗口 + QtWebEngine（Chromium）网页渲染
+cryptography>=42.0.0      # 凭据加密：AESGCM + Scrypt
+pywin32>=306              # DPAPI（TPM 硬件加密）、LogonUser（Windows 密码校验与探测）
+wmi>=1.5.1                # TPM 2.0 检测、Windows 账户密码状态探测
+requests>=2.31.0          # FN ID 双域名连通性探测（5ddd.com / fnos.net）
+
+# 打包发布（可选，生成独立 exe 时取消注释）
+# pyinstaller>=6.3.0

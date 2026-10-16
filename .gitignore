@@ -1,0 +1,39 @@
+﻿# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ===== 虚拟环境 =====
+.venv/
+venv/
+env/
+.env
+
+# ===== PyInstaller 打包产物 =====
+setup_out/
+setup_build/
+
+# ===== 凭据备份与加密文件（本地生成，禁止入库）=====
+*.fnosbak
+*.enc
+
+# ===== 日志 / 临时文件 =====
+*.log
+*.tmp
+*.bak
+*.swp
+
+# ===== IDE =====
+.vscode/
+.idea/
+
+# ===== Windows =====
+Thumbs.db
+Desktop.ini
+
+# ===== 本地运行时数据（data.json 位于程序目录/data 下）=====
+data/
