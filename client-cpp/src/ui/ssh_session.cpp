@@ -74,7 +74,7 @@ QByteArray stripSttyEcho(const QByteArray &data, QByteArray &pending)
         while (!trimmed.isEmpty() && (trimmed.endsWith('\r') || trimmed.endsWith('\n'))) {
             trimmed.chop(1);
         }
-        // 回显行可能带提示符前缀（LYC@test:~$ stty ...），所以只要求行内有该命令
+        // 回显行可能带提示符前缀（user@nas:~$ stty ...），所以只要求行内有该命令
         const bool isSizeEcho = trimmed.contains("stty rows ") && trimmed.contains(" cols ")
             && trimmed.endsWith("2>/dev/null");
         if (!isSizeEcho) {

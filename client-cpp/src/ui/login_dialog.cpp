@@ -86,7 +86,7 @@ LoginDialog::LoginDialog(ApiClient *api, AppConfig *config, QWidget *parent)
 
     auto *hostLabel = makeLabel(QStringLiteral("服务器地址"), QStringLiteral("muted"), card);
     m_host = new QLineEdit(card);
-    m_host->setPlaceholderText(QStringLiteral("例如 192.168.180.137 或 192.168.1.100:59120"));
+    m_host->setPlaceholderText(QStringLiteral("例如 192.168.1.100 或 192.168.1.100:59120"));
     m_host->setText(m_config->host);
 
     auto *userLabel = makeLabel(QStringLiteral("用户名"), QStringLiteral("muted"), card);
@@ -316,7 +316,7 @@ void LoginDialog::submit()
     }
     const QString host = resolvedHost();
     if (host.isEmpty()) {
-        setStatus(QStringLiteral("请先填写服务器地址，例如 192.168.180.137"), QStringLiteral("error"));
+        setStatus(QStringLiteral("请先填写服务器地址，例如 192.168.1.100"), QStringLiteral("error"));
         m_host->setFocus();
         return;
     }

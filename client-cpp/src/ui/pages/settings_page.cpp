@@ -409,7 +409,7 @@ void SettingsPage::buildServerCard()
 
     grid->addWidget(makeLabel(QStringLiteral("NAS 地址"), QStringLiteral("muted"), card), 0, 0);
     m_hostEdit = new QLineEdit(card);
-    m_hostEdit->setPlaceholderText(QStringLiteral("例如 192.168.180.137"));
+    m_hostEdit->setPlaceholderText(QStringLiteral("例如 192.168.1.100"));
     grid->addWidget(m_hostEdit, 0, 1);
 
     grid->addWidget(makeLabel(QStringLiteral("管理后台端口"), QStringLiteral("muted"), card), 1, 0);

@@ -34,7 +34,7 @@ server/fpk/app/node_modules/ssh2/test/
 # ===== 临时文件 =====
 exe_pid.txt
 shot*.png
-UsershbxdssAppDataLocalTempcrop_*.png
+crop_*.png
 setup_key*.py
 setup_ssh_key.py
 
