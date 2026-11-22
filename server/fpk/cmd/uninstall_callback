@@ -1,0 +1,30 @@
+#!/bin/bash
+# =============================================================================
+# 飞牛终端（fnos-terminal）卸载回调
+#   - 读取 pid 文件并优雅结束服务进程
+#   - 保留数据目录（数据库/证书/文件），重新安装后可继续使用
+# =============================================================================
+set -u
+
+PKG_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+VAR_DIR="${TRIM_PKGVAR:-${PKG_DIR}/var}"
+PID_FILE="${VAR_DIR}/app.pid"
+
+if [ -f "${PID_FILE}" ]; then
+    PID="$(head -n 1 "${PID_FILE}" 2>/dev/null | tr -d '[:space:]')"
+    if [ -n "${PID}" ] && kill -0 "${PID}" 2>/dev/null; then
+        echo "[飞牛终端] 停止服务进程 ${PID}"
+        kill -TERM "${PID}" 2>/dev/null
+        for _ in $(seq 1 20); do
+            kill -0 "${PID}" 2>/dev/null || break
+            sleep 0.5
+        done
+        if kill -0 "${PID}" 2>/dev/null; then
+            echo "[飞牛终端] 进程未响应，强制结束 ${PID}"
+            kill -KILL "${PID}" 2>/dev/null
+        fi
+    fi
+    rm -f "${PID_FILE}" 2>/dev/null
+fi
+
+echo "[飞牛终端] 卸载完成，用户数据仍保留在 ${VAR_DIR}/data"

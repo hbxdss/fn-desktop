@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="win11" data-mode="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#1b1b1b">
+  <title>飞牛终端 · 管理后台</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-logo" viewBox="0 0 24 24">
+      <path d="M4.5 16.5 12 3l7.5 13.5M7.5 21h9M12 8.5v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24">
+      <path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-docker" viewBox="0 0 24 24">
+      <path d="M3 13h18c0 4-3.2 7-8 7H8c-2.8 0-5-2.2-5-5v-2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M6 10h2.5v3H6v-3Zm3.5 0H12v3H9.5v-3Zm3.5 0h2.5v3H13v-3ZM9.5 6.5H12v3H9.5v-3Zm3.5 0h2.5v3H13v-3ZM16 10h2.5v3H16v-3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-users" viewBox="0 0 24 24">
+      <circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M3.5 20c0-3.2 2.5-5.2 5.5-5.2s5.5 2 5.5 5.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M16 5.6a3 3 0 0 1 0 5.6M17.5 14.6c1.8.6 3 2.3 3 4.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+      <path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24">
+      <path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24">
+      <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="M12 3.5 19 6v6c0 4.2-2.9 7.4-7 8.5-4.1-1.1-7-4.3-7-8.5V6l7-2.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="m9 12 2.2 2.2L15.5 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24">
+      <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M20 14.4A8.4 8.4 0 0 1 9.6 4a8.4 8.4 0 1 0 10.4 10.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-files" viewBox="0 0 24 24">
+      <path d="M3.5 7.5a2 2 0 0 1 2-2h3.4l1.7 2h8a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-10.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-share" viewBox="0 0 24 24">
+      <circle cx="7" cy="12" r="2.8" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <circle cx="17.5" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <circle cx="17.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="m9.6 10.7 5.4-3.1M9.6 13.3l5.4 3.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24">
+      <path d="M12 16V5m0 0-4 4m4-4 4 4M4.5 15v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="m16 16 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-more" viewBox="0 0 24 24">
+      <circle cx="6" cy="12" r="1.7" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.7" fill="currentColor"/>
+      <circle cx="18" cy="12" r="1.7" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-home" viewBox="0 0 24 24">
+      <path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M12 4v11m0 0 4-4m-4 4-4-4M4.5 17v1.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24">
+      <path d="M3.5 7.5a2 2 0 0 1 2-2h3.4l1.7 2h8a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-10.5Z" fill="currentColor" opacity="0.28"/>
+      <path d="M3.5 7.5a2 2 0 0 1 2-2h3.4l1.7 2h8a2 2 0 0 1 2 2v8.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-10.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-file" viewBox="0 0 24 24">
+      <path d="M6 3.5h7.5L19 9v11.5H6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M13.5 3.5V9H19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24">
+      <path d="m12 4 2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8L12 4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+      <path d="M4.5 7h15M9.5 7V4.8h5V7M6.5 7l.9 12.2a1.5 1.5 0 0 0 1.5 1.3h6.2a1.5 1.5 0 0 0 1.5-1.3L17.5 7M10.5 10.5v6M13.5 10.5v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="7.6" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M12 7.6V12l3.2 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m5 12.5 4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24">
+      <rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M10 10h4v4h-4z" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M9.5 3.5v3M14.5 3.5v3M9.5 17.5v3M14.5 17.5v3M3.5 9.5h3M3.5 14.5h3M17.5 9.5h3M17.5 14.5h3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-memory" viewBox="0 0 24 24">
+      <rect x="3" y="7.5" width="18" height="9" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M7 10.5v3M11 10.5v3M15 10.5v3M19 10.5v3M6.5 16.5v2.5M12 16.5v2.5M17.5 16.5v2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-disk" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="6.5" rx="7.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M4.5 6.5v11c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-11" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="8.5" y="8.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M15.5 5.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-collapse" viewBox="0 0 24 24">
+      <rect x="3.5" y="4.5" width="17" height="15" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M9 4.5v15M15.5 9.5 13 12l2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24">
+      <rect x="3.5" y="4.5" width="17" height="15" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M9 4.5v15M12.8 9.5 15.3 12l-2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8.4" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24">
+      <path d="M3.5 13.5 6 5.2a1.8 1.8 0 0 1 1.7-1.2h8.6A1.8 1.8 0 0 1 18 5.2l2.5 8.3v4.3a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-4.3Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M3.5 13.5h5l1 2h5l1-2h5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24">
+      <path d="M12 4.5 21 20H3L12 4.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M12 10v4.5M12 17.4v.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M12 11v5.5M12 7.6v.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path d="M5 12h13m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-server" viewBox="0 0 24 24">
+      <rect x="3.5" y="4" width="17" height="6.4" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <rect x="3.5" y="13.6" width="17" height="6.4" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M7 7.2h.2M7 16.8h.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24">
+      <path d="M13.5 3 5 13.6h5.4L10 21l8.6-10.7h-5.5L13.5 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+    </symbol>
+    <!-- Docker 视图专用图标 -->
+    <symbol id="i-play" viewBox="0 0 24 24">
+      <path d="M8 5.4 18.5 12 8 18.6V5.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24">
+      <rect x="6" y="6" width="12" height="12" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24">
+      <path d="M9 5.5v13M15 5.5v13" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-restart" viewBox="0 0 24 24">
+      <path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5.5h-5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24">
+      <rect x="3.4" y="4.4" width="17.2" height="15.2" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="m7.6 9.4 3 2.6-3 2.6M13 15h3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-network" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M3.6 12h16.8M12 3.6c2.4 2.4 3.6 5.2 3.6 8.4s-1.2 6-3.6 8.4c-2.4-2.4-3.6-5.2-3.6-8.4S9.6 6 12 3.6Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24">
+      <path d="M4 4h7.2l8.4 8.4a1.8 1.8 0 0 1 0 2.6l-4.6 4.6a1.8 1.8 0 0 1-2.6 0L4 11.2V4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <circle cx="8" cy="8" r="1.4" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24">
+      <path d="M16.4 4.6 19.4 7.6M4.5 19.5l1-4.6L16 4.4a1.8 1.8 0 0 1 2.5 0l1.1 1.1a1.8 1.8 0 0 1 0 2.5L9.1 18.5l-4.6 1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-docker-off" viewBox="0 0 24 24">
+      <path d="M3 13h18c0 4-3.2 7-8 7H8c-2.8 0-5-2.2-5-5v-2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M6 10h2.5v3H6v-3Zm3.5 0H12v3H9.5v-3Zm3.5 0h2.5v3H13v-3ZM9.5 6.5H12v3H9.5v-3Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M3.5 3.5 20.5 20.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24">
+      <path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 3.2v2.2M12 18.6v2.2M3.2 12h2.2M18.6 12h2.2M5.8 5.8l1.6 1.6M16.6 16.6l1.6 1.6M18.2 5.8l-1.6 1.6M7.4 16.6l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-log" viewBox="0 0 24 24">
+      <circle cx="5.8" cy="6.6" r="1.25" fill="currentColor" stroke="none"/>
+      <circle cx="5.8" cy="12" r="1.25" fill="currentColor" stroke="none"/>
+      <circle cx="5.8" cy="17.4" r="1.25" fill="currentColor" stroke="none"/>
+      <path d="M9.8 6.6h10.2M9.8 12h10.2M9.8 17.4h10.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <!-- 登录 / 初始化 -->
+  <div id="authView" class="auth-view">
+    <div class="auth-orb auth-orb-a"></div>
+    <div class="auth-orb auth-orb-b"></div>
+    <div class="auth-theme">
+      <select class="theme-select" data-theme-picker aria-label="界面主题">
+        <option value="win7">主题1</option>
+        <option value="win10">主题2</option>
+        <option value="win11">主题3</option>
+        <option value="glass">主题4</option>
+      </select>
+      <button class="icon-btn" type="button" data-mode-toggle aria-label="切换深色 / 浅色模式" title="切换深色 / 浅色">
+        <svg class="icon"><use href="#i-moon"></use></svg>
+      </button>
+    </div>
+    <div class="auth-hero">
+      <div class="auth-hero-mark">
+        <svg class="icon"><use href="#i-logo"></use></svg>
+      </div>
+      <h2 class="auth-hero-title">飞牛终端</h2>
+      <p class="auth-hero-sub">NAS 管理后台 · 容器 / 用户 / 存储 一站式掌控</p>
+      <ul class="auth-hero-list">
+        <li><span class="dot"></span>仪表盘实时呈现 CPU、内存、磁盘与负载</li>
+        <li><span class="dot"></span>容器一键启停、重启，状态自动轮询</li>
+        <li><span class="dot"></span>用户与权限位精细管理，操作全程留痕</li>
+      </ul>
+      <p class="auth-hero-foot">全程 TLS 1.3 加密 · 数据保存在 NAS 本机</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="logo-badge"><svg class="icon"><use href="#i-logo"></use></svg></div>
+        <div>
+          <div class="brand-title">飞牛终端</div>
+          <div class="brand-sub">NAS 管理后台</div>
+        </div>
+      </div>
+
+      <div id="loginPane">
+        <h1 class="auth-heading">登录管理后台</h1>
+        <p class="auth-tip">请使用 NAS 账号登录，登录状态仅保存在当前浏览器会话中。</p>
+        <form id="loginForm" autocomplete="off">
+          <label class="field">
+            <span>用户名</span>
+            <input id="loginUser" type="text" maxlength="32" placeholder="请输入用户名" autocomplete="username" required>
+          </label>
+          <label class="field">
+            <span>密码</span>
+            <input id="loginPass" type="password" maxlength="128" placeholder="请输入密码" autocomplete="current-password" required>
+          </label>
+          <button id="loginBtn" class="btn btn-primary btn-block" type="submit">登录</button>
+          <p id="loginError" class="form-error" hidden></p>
+        </form>
+      </div>
+
+      <div id="setupPane" hidden>
+        <h1 class="auth-heading">初始化系统</h1>
+        <p class="auth-tip">数据库为空，请先创建唯一的超级管理员。系统没有默认密码。</p>
+        <form id="setupForm" autocomplete="off">
+          <label class="field">
+            <span>超级管理员用户名</span>
+            <input id="setupUser" type="text" maxlength="32" placeholder="3~32 位字母、数字、_ . -" autocomplete="username" required>
+          </label>
+          <label class="field">
+            <span>密码</span>
+            <input id="setupPass" type="password" maxlength="128" placeholder="至少 8 位，需包含字母与数字" autocomplete="new-password" required>
+          </label>
+          <label class="field">
+            <span>确认密码</span>
+            <input id="setupPass2" type="password" maxlength="128" placeholder="请再次输入密码" autocomplete="new-password" required>
+          </label>
+          <button id="setupBtn" class="btn btn-primary btn-block" type="submit">创建超级管理员并进入</button>
+          <p id="setupError" class="form-error" hidden></p>
+        </form>
+      </div>
+
+      <div class="auth-foot">
+        <span class="status-dot" id="authConn"></span>
+        <span id="authConnText">正在检查服务状态…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主界面 -->
+  <div id="appView" class="app" hidden>
+    <aside class="sidebar" aria-label="主导航">
+      <div class="side-brand">
+        <div class="logo-badge small"><svg class="icon"><use href="#i-logo"></use></svg></div>
+        <div class="brand-text">
+          <div class="brand-title small">飞牛终端</div>
+          <div class="brand-sub">管理后台</div>
+        </div>
+      </div>
+
+      <button class="side-collapse" id="sidebarCollapse" type="button" data-tip="收起侧栏" aria-label="收起侧栏">
+        <svg class="icon"><use href="#i-collapse"></use></svg><span>收起侧栏</span>
+      </button>
+
+      <div class="side-label">导航</div>
+      <nav class="side-nav">
+        <a href="#/dashboard" class="nav-item" data-view="dashboard" data-tip="仪表盘">
+          <svg class="icon"><use href="#i-dashboard"></use></svg><span>仪表盘</span>
+        </a>
+        <a href="#/files" class="nav-item" data-view="files" id="navFiles" data-tip="文件管理">
+          <svg class="icon"><use href="#i-files"></use></svg><span>文件管理</span>
+        </a>
+        <a href="#/shares" class="nav-item" data-view="shares" id="navShares" data-tip="分享管理">
+          <svg class="icon"><use href="#i-share"></use></svg><span>分享管理</span>
+        </a>
+        <a href="#/docker" class="nav-item" data-view="docker" id="navDocker" data-tip="容器管理">
+          <svg class="icon"><use href="#i-docker"></use></svg><span>容器管理</span>
+        </a>
+        <a href="#/users" class="nav-item" data-view="users" id="navUsers" data-tip="用户管理">
+          <svg class="icon"><use href="#i-users"></use></svg><span>用户管理</span>
+        </a>
+        <a href="#/audit" class="nav-item" data-view="audit" id="navAudit" data-tip="审计日志">
+          <svg class="icon"><use href="#i-log"></use></svg><span>审计日志</span>
+        </a>
+        <a href="#/settings" class="nav-item" data-view="settings" id="navSettings" data-tip="系统设置">
+          <svg class="icon"><use href="#i-gear"></use></svg><span>系统设置</span>
+        </a>
+      </nav>
+
+      <div class="side-foot">
+        <div class="avatar" id="userAvatar" data-tip="当前账号">?</div>
+        <div class="side-user">
+          <div class="side-username" id="sideUsername">-</div>
+          <div class="side-role" id="sideRole">-</div>
+        </div>
+        <button class="icon-btn" id="logoutBtn" data-tip="退出登录" title="退出登录" aria-label="退出登录">
+          <svg class="icon"><use href="#i-logout"></use></svg>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-mask" id="sidebarMask"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="打开导航菜单" title="导航菜单">
+            <svg class="icon"><use href="#i-menu"></use></svg>
+          </button>
+          <div class="topbar-heading">
+            <nav class="crumbs" id="crumbs" aria-label="面包屑"></nav>
+            <div class="topbar-title-row">
+              <h1 id="pageTitle">仪表盘</h1>
+              <p id="pageSubtitle" class="page-subtitle">系统运行概览</p>
+            </div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="conn-state" id="connState"><span class="status-dot online"></span>已连接</span>
+          <div class="theme-switch">
+            <select class="theme-select" data-theme-picker aria-label="界面主题">
+              <option value="win7">主题1</option>
+              <option value="win10">主题2</option>
+              <option value="win11">主题3</option>
+              <option value="glass">主题4</option>
+            </select>
+            <button class="icon-btn" type="button" data-mode-toggle aria-label="切换深色 / 浅色模式" title="切换深色 / 浅色">
+              <svg class="icon"><use href="#i-moon"></use></svg>
+            </button>
+          </div>
+          <button class="btn btn-ghost top-refresh" id="refreshBtn">
+            <svg class="icon"><use href="#i-refresh"></use></svg><span>刷新</span>
+          </button>
+          <div class="user-menu-wrap">
+            <button class="user-btn" id="userMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="账号菜单">
+              <span class="avatar small" id="topbarAvatar">?</span>
+              <span class="user-btn-text">
+                <strong id="userMenuName">-</strong>
+                <small id="userMenuRole">-</small>
+              </span>
+              <svg class="icon chev"><use href="#i-arrow"></use></svg>
+            </button>
+            <div class="menu-pop" id="userMenu" role="menu" hidden>
+              <div class="menu-pop-head">
+                <span class="avatar small" id="userMenuAvatar">?</span>
+                <div>
+                  <strong id="userMenuFullName">-</strong>
+                  <small>登录状态保存在当前浏览器</small>
+                </div>
+              </div>
+              <div class="menu-pop-sep"></div>
+              <button class="menu-pop-item" id="userMenuLogout" type="button" role="menuitem">
+                <svg class="icon"><use href="#i-logout"></use></svg>退出登录
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- 仪表盘 -->
+        <section id="view-dashboard" class="view">
+          <div class="dash-toolbar">
+            <div class="dash-toolbar-text">
+              <strong>运行概览</strong>
+              <span class="muted" id="dashRefreshHint">每 5 秒自动刷新</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="dashFullscreenBtn" type="button" title="全屏显示仪表盘">
+              <svg class="icon"><use href="#i-expand"></use></svg><span id="dashFullscreenText">全屏显示</span>
+            </button>
+          </div>
+          <div class="stat-grid kpi-grid">
+            <article class="stat-card kpi">
+              <div class="stat-head">
+                <span class="kpi-label"><svg class="icon"><use href="#i-cpu"></use></svg>CPU 占用</span>
+                <span class="tag">实时</span>
+              </div>
+              <div class="stat-body">
+                <div class="ring" id="cpuRing" style="--p:0">
+                  <div class="ring-inner"><span id="cpuValue">--</span><small>%</small></div>
+                </div>
+                <div class="stat-meta">
+                  <div class="stat-strong" id="cpuModel">-</div>
+                  <div class="muted" id="cpuCores">-</div>
+                </div>
+              </div>
+              <div class="kpi-track"><span class="kpi-fill" id="cpuBar" style="width:0%"></span></div>
+            </article>
+
+            <article class="stat-card kpi">
+              <div class="stat-head">
+                <span class="kpi-label"><svg class="icon"><use href="#i-memory"></use></svg>内存占用</span>
+                <span class="tag" id="memTag">-</span>
+              </div>
+              <div class="stat-body">
+                <div class="ring accent-teal" id="memRing" style="--p:0">
+                  <div class="ring-inner"><span id="memValue">--</span><small>%</small></div>
+                </div>
+                <div class="stat-meta">
+                  <div class="stat-strong" id="memUsed">-</div>
+                  <div class="muted" id="memTotal">-</div>
+                </div>
+              </div>
+              <div class="kpi-track"><span class="kpi-fill teal" id="memBar" style="width:0%"></span></div>
+            </article>
+
+            <article class="stat-card kpi">
+              <div class="stat-head">
+                <span class="kpi-label"><svg class="icon"><use href="#i-disk"></use></svg>磁盘占用</span>
+                <span class="tag" id="storageTag">-</span>
+              </div>
+              <div class="stat-body">
+                <div class="ring accent-warn" id="diskRing" style="--p:0">
+                  <div class="ring-inner"><span id="diskValue">--</span><small>%</small></div>
+                </div>
+                <div class="stat-meta">
+                  <div class="stat-strong" id="storageUsed">-</div>
+                  <div class="muted" id="storageFree">-</div>
+                </div>
+              </div>
+              <div class="storage-block compact">
+                <div class="storage-bar"><div class="storage-fill" id="storageFill" style="width:0%"></div></div>
+                <div class="muted storage-path" id="storagePath">-</div>
+              </div>
+            </article>
+
+            <article class="stat-card kpi">
+              <div class="stat-head">
+                <span class="kpi-label"><svg class="icon"><use href="#i-clock"></use></svg>运行时间</span>
+                <span class="tag" id="platformTag">-</span>
+              </div>
+              <div class="stat-simple">
+                <div class="stat-strong big" id="uptimeText">-</div>
+                <div class="muted" id="bootTime">-</div>
+              </div>
+              <div class="kv-inline kv-compact">
+                <div><span class="muted">主机名</span><strong id="hostnameText">-</strong></div>
+                <div><span class="muted">架构</span><strong id="archText">-</strong></div>
+              </div>
+            </article>
+          </div>
+
+          <div class="panel-grid">
+            <div class="panel card panel-system">
+              <div class="panel-head">
+                <h2>系统信息</h2>
+                <span class="tag">只读</span>
+              </div>
+              <dl class="info-list" id="sysInfoList">
+                <div><dt>运行平台</dt><dd>-</dd></div>
+              </dl>
+              <div class="fingerprint">
+                <div class="fingerprint-head">
+                  <span class="kpi-label"><svg class="icon"><use href="#i-shield"></use></svg>证书指纹</span>
+                  <button class="btn btn-ghost btn-sm" id="copyFingerprint" type="button">
+                    <svg class="icon"><use href="#i-copy"></use></svg><span>复制</span>
+                  </button>
+                </div>
+                <code id="certFingerprint">-</code>
+                <div class="muted fingerprint-meta" id="certMeta">TLS 1.3 · 端口 -</div>
+              </div>
+            </div>
+
+            <div class="panel card panel-quick">
+              <div class="panel-head">
+                <h2>快捷入口</h2>
+                <span class="tag">常用</span>
+              </div>
+              <div class="quick-grid">
+                <a class="quick-item" href="#/files" id="quickFiles">
+                  <span class="quick-icon"><svg class="icon"><use href="#i-files"></use></svg></span>
+                  <span class="quick-text">
+                    <strong>文件管理</strong>
+                    <small>浏览、上传与整理 NAS 文件</small>
+                  </span>
+                  <svg class="icon quick-arrow"><use href="#i-arrow"></use></svg>
+                </a>
+                <a class="quick-item" href="#/shares" id="quickShares">
+                  <span class="quick-icon"><svg class="icon"><use href="#i-share"></use></svg></span>
+                  <span class="quick-text">
+                    <strong>分享管理</strong>
+                    <small>创建外链、设置有效期与提取码</small>
+                  </span>
+                  <svg class="icon quick-arrow"><use href="#i-arrow"></use></svg>
+                </a>
+                <a class="quick-item" href="#/docker" id="quickDocker">
+                  <span class="quick-icon"><svg class="icon"><use href="#i-docker"></use></svg></span>
+                  <span class="quick-text">
+                    <strong>容器管理</strong>
+                    <small>启停、重启容器并查看状态</small>
+                  </span>
+                  <svg class="icon quick-arrow"><use href="#i-arrow"></use></svg>
+                </a>
+                <a class="quick-item" href="#/users" id="quickUsers">
+                  <span class="quick-icon"><svg class="icon"><use href="#i-users"></use></svg></span>
+                  <span class="quick-text">
+                    <strong>用户管理</strong>
+                    <small>账号、角色与权限位配置</small>
+                  </span>
+                  <svg class="icon quick-arrow"><use href="#i-arrow"></use></svg>
+                </a>
+              </div>
+              <div class="kv-inline">
+                <div><span class="muted">容器总数</span><strong id="dockerCount">-</strong></div>
+                <div><span class="muted">运行中</span><strong id="dockerRunning">-</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 文件管理 -->
+        <section id="view-files" class="view" hidden>
+          <div class="files-layout">
+            <aside class="files-side" aria-label="文件快捷入口">
+              <button class="files-side-item active" data-fmode="browse" type="button">
+                <svg class="icon"><use href="#i-files"></use></svg><span>我的文件</span>
+              </button>
+              <button class="files-side-item" data-fmode="favorites" type="button">
+                <svg class="icon"><use href="#i-star"></use></svg><span>我的收藏</span>
+              </button>
+              <button class="files-side-item" data-fmode="recent" type="button">
+                <svg class="icon"><use href="#i-clock"></use></svg><span>最近访问</span>
+              </button>
+              <button class="files-side-item" data-fmode="trash" type="button">
+                <svg class="icon"><use href="#i-trash"></use></svg><span>回收站</span>
+              </button>
+            </aside>
+
+            <div class="panel files-panel">
+              <div class="files-toolbar">
+                <div class="files-toolbar-row">
+                  <nav class="breadcrumb" id="filesBreadcrumb" aria-label="当前路径"></nav>
+                  <div class="files-actions" id="filesActions">
+                    <button class="btn btn-ghost btn-sm" id="filesRefresh" type="button">刷新</button>
+                    <button class="btn btn-ghost btn-sm" id="filesMkdir" type="button">新建文件夹</button>
+                    <button class="btn btn-ghost btn-sm" id="filesCompress" type="button" disabled>压缩</button>
+                    <button class="btn btn-ghost btn-sm" id="filesExtract" type="button" disabled>解压</button>
+                    <button class="btn btn-primary btn-sm" id="filesUploadBtn" type="button">
+                      <svg class="icon"><use href="#i-upload"></use></svg>上传
+                    </button>
+                    <button class="btn btn-danger btn-sm" id="filesTrashClear" type="button" hidden>清空回收站</button>
+                  </div>
+                </div>
+                <div class="files-toolbar-row" id="filesSearchRow">
+                  <div class="files-search">
+                    <svg class="icon"><use href="#i-search"></use></svg>
+                    <input id="filesSearchInput" type="search" placeholder="在当前目录递归搜索，回车执行" aria-label="搜索文件">
+                    <button class="btn btn-ghost btn-sm" id="filesSearchBtn" type="button">搜索</button>
+                  </div>
+                  <div class="files-search-note" id="filesSearchNote" hidden>
+                    <span id="filesSearchText"></span>
+                    <button class="btn btn-ghost btn-sm" id="filesSearchExit" type="button">返回目录</button>
+                  </div>
+                </div>
+                <div class="batch-bar" id="filesBatchBar" hidden></div>
+              </div>
+
+              <div id="filesError" class="alert alert-error" hidden>
+                <span id="filesErrorText"></span>
+                <button class="btn btn-ghost btn-sm" id="filesRetry" type="button">重试</button>
+              </div>
+
+              <div class="table-wrap">
+                <table class="table files-table">
+                  <thead id="filesHead"></thead>
+                  <tbody id="filesBody">
+                    <tr class="skeleton-row"><td><span class="skeleton skeleton-line"></span></td></tr>
+                    <tr class="skeleton-row"><td><span class="skeleton skeleton-line short"></span></td></tr>
+                    <tr class="skeleton-row"><td><span class="skeleton skeleton-line"></span></td></tr>
+                    <tr class="skeleton-row"><td><span class="skeleton skeleton-line short"></span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="files-drop-hint" id="filesDropHint" hidden>
+                <svg class="icon"><use href="#i-upload"></use></svg>
+                <span>松开鼠标，上传到当前目录</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="upload-panel" id="uploadPanel" hidden>
+            <div class="upload-panel-head">
+              <strong>上传队列</strong>
+              <button class="icon-btn" id="uploadPanelClose" type="button" aria-label="收起上传队列" title="收起">
+                <svg class="icon"><use href="#i-close"></use></svg>
+              </button>
+            </div>
+            <div class="upload-list" id="uploadList"></div>
+          </div>
+
+          <input type="file" id="filesFileInput" multiple hidden>
+        </section>
+
+        <!-- 分享管理 -->
+        <section id="view-shares" class="view" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <h2>分享链接</h2>
+              <div class="panel-actions">
+                <span class="tag" id="sharesSummary">-</span>
+                <label class="shares-all" id="sharesAllWrap" hidden>
+                  <input type="checkbox" id="sharesAllToggle">
+                  <span>查看全部用户</span>
+                </label>
+                <button class="btn btn-primary btn-sm" id="sharesCreateBtn" type="button">
+                  <svg class="icon"><use href="#i-plus"></use></svg>新建分享
+                </button>
+              </div>
+            </div>
+            <div id="sharesError" class="alert alert-error" hidden>
+              <span id="sharesErrorText"></span>
+              <button class="btn btn-ghost btn-sm" id="sharesRetry" type="button">重试</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table shares-table">
+                <thead>
+                  <tr>
+                    <th>名称</th>
+                    <th>路径</th>
+                    <th>加密</th>
+                    <th>已下载</th>
+                    <th>过期时间</th>
+                    <th>创建时间</th>
+                    <th class="col-actions">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="sharesBody">
+                  <tr class="skeleton-row"><td colspan="7"><span class="skeleton skeleton-line"></span></td></tr>
+                  <tr class="skeleton-row"><td colspan="7"><span class="skeleton skeleton-line short"></span></td></tr>
+                  <tr class="skeleton-row"><td colspan="7"><span class="skeleton skeleton-line"></span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Docker -->
+        <section id="view-docker" class="view" hidden>
+          <!-- 顶部状态条 -->
+          <div class="docker-status-bar">
+            <div class="docker-status-main">
+              <span class="docker-status-dot" id="dockerStatusDot" aria-hidden="true"></span>
+              <span class="docker-status-text" id="dockerStatusText">正在连接 Docker…</span>
+              <span class="tag" id="dockerSummary">-</span>
+            </div>
+            <div class="docker-metrics" id="dockerMetrics"></div>
+            <div class="docker-status-actions">
+              <label class="docker-switch" title="每 10 秒静默刷新当前标签页">
+                <input type="checkbox" id="dockerAutoRefresh" checked>
+                <span>自动刷新</span>
+              </label>
+              <button class="btn btn-ghost btn-sm" id="dockerRefreshBtn" type="button">
+                <svg class="icon"><use href="#i-refresh"></use></svg>刷新
+              </button>
+            </div>
+          </div>
+
+          <!-- Docker 不可用提示 -->
+          <div class="docker-unavailable" id="dockerError" hidden>
+            <svg class="icon docker-unavailable-icon" aria-hidden="true"><use href="#i-docker-off"></use></svg>
+            <h3 id="dockerErrorText">未检测到 Docker 服务</h3>
+            <p class="docker-unavailable-hint" id="dockerErrorHint">请先在飞牛中安装并启动 Docker</p>
+            <button class="btn btn-primary" id="dockerRetry" type="button">
+              <svg class="icon"><use href="#i-refresh"></use></svg>重试
+            </button>
+          </div>
+
+          <!-- 主面板：四个标签页 -->
+          <div class="panel docker-panel" id="dockerPanel">
+            <div class="docker-tabs" id="dockerTabs" role="tablist" aria-label="Docker 资源分类">
+              <button class="docker-tab is-active" type="button" role="tab" data-dtab="containers" aria-selected="true">
+                容器<span class="docker-tab-count" id="dockerCountContainers">-</span>
+              </button>
+              <button class="docker-tab" type="button" role="tab" data-dtab="images" aria-selected="false">
+                镜像<span class="docker-tab-count" id="dockerCountImages">-</span>
+              </button>
+              <button class="docker-tab" type="button" role="tab" data-dtab="volumes" aria-selected="false">
+                卷<span class="docker-tab-count" id="dockerCountVolumes">-</span>
+              </button>
+              <button class="docker-tab" type="button" role="tab" data-dtab="networks" aria-selected="false">
+                网络<span class="docker-tab-count" id="dockerCountNetworks">-</span>
+              </button>
+            </div>
+
+            <!-- 容器 -->
+            <div class="docker-pane" data-dpane="containers">
+              <div class="docker-toolbar">
+                <label class="docker-search">
+                  <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+                  <input type="search" id="dockerSearch" placeholder="搜索容器名称或镜像" autocomplete="off">
+                </label>
+                <select class="docker-select" id="dockerStateFilter" aria-label="按状态筛选">
+                  <option value="all">全部状态</option>
+                  <option value="running">运行中</option>
+                  <option value="exited">已停止</option>
+                  <option value="paused">已暂停</option>
+                </select>
+                <button class="btn btn-ghost btn-sm" id="dockerExpandPortsBtn" type="button" aria-expanded="false">
+                  <svg class="icon"><use href="#i-chevron"></use></svg>展开全部端口
+                </button>
+                <button class="btn btn-primary btn-sm" id="dockerCreateBtn" type="button">
+                  <svg class="icon"><use href="#i-plus"></use></svg>创建容器
+                </button>
+              </div>
+
+              <div class="batch-bar docker-batch" id="dockerBatchBar" hidden>
+                <span class="batch-info" id="dockerBatchInfo">已选择 0 项</span>
+                <button class="btn btn-sm" id="dockerBatchStart" type="button">批量启动</button>
+                <button class="btn btn-sm" id="dockerBatchStop" type="button">批量停止</button>
+                <button class="btn btn-sm" id="dockerBatchRestart" type="button">批量重启</button>
+                <button class="btn btn-danger btn-sm" id="dockerBatchDelete" type="button">批量删除</button>
+                <button class="btn btn-ghost btn-sm" id="dockerBatchClear" type="button">取消选择</button>
+              </div>
+
+              <div class="table-wrap">
+                <table class="table docker-table" id="dockerTable">
+                  <thead>
+                    <tr>
+                      <th class="col-check"><input type="checkbox" id="dockerSelectAll" aria-label="全选容器"></th>
+                      <th>容器</th>
+                      <th>镜像</th>
+                      <th>端口映射</th>
+                      <th>状态</th>
+                      <th>创建时间</th>
+                      <th class="col-actions">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dockerBody">
+                    <tr class="skeleton-row"><td colspan="7"><span class="skeleton skeleton-line"></span></td></tr>
+                    <tr class="skeleton-row"><td colspan="7"><span class="skeleton skeleton-line short"></span></td></tr>
+                    <tr class="skeleton-row"><td colspan="7"><span class="skeleton skeleton-line"></span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 镜像 -->
+            <div class="docker-pane" data-dpane="images" hidden>
+              <div class="docker-toolbar">
+                <label class="docker-search docker-search-wide">
+                  <svg class="icon" aria-hidden="true"><use href="#i-tag"></use></svg>
+                  <input type="text" id="dockerImageInput" placeholder="输入镜像名称，如 nginx:latest" autocomplete="off">
+                </label>
+                <button class="btn btn-primary btn-sm" id="dockerPullBtn" type="button">
+                  <svg class="icon"><use href="#i-download"></use></svg>拉取镜像
+                </button>
+                <button class="btn btn-warn btn-sm" id="dockerPruneBtn" type="button">
+                  <svg class="icon"><use href="#i-trash"></use></svg>清理未使用镜像
+                </button>
+              </div>
+              <div class="docker-pull-status" id="dockerPullStatus" hidden></div>
+              <div class="table-wrap">
+                <table class="table docker-table" id="dockerImageTable">
+                  <thead>
+                    <tr>
+                      <th>仓库标签</th>
+                      <th>镜像 ID</th>
+                      <th>大小</th>
+                      <th>创建时间</th>
+                      <th class="col-actions">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dockerImageBody">
+                    <tr class="skeleton-row"><td colspan="5"><span class="skeleton skeleton-line"></span></td></tr>
+                    <tr class="skeleton-row"><td colspan="5"><span class="skeleton skeleton-line short"></span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 数据卷 -->
+            <div class="docker-pane" data-dpane="volumes" hidden>
+              <div class="docker-toolbar">
+                <label class="docker-search docker-search-wide">
+                  <svg class="icon" aria-hidden="true"><use href="#i-folder"></use></svg>
+                  <input type="text" id="dockerVolumeName" placeholder="数据卷名称" autocomplete="off">
+                </label>
+                <select class="docker-select" id="dockerVolumeDriver" aria-label="数据卷驱动">
+                  <option value="local">local</option>
+                </select>
+                <button class="btn btn-primary btn-sm" id="dockerVolumeCreate" type="button">
+                  <svg class="icon"><use href="#i-plus"></use></svg>创建数据卷
+                </button>
+              </div>
+              <div class="docker-form-error" id="dockerVolumeError" hidden></div>
+              <div class="table-wrap">
+                <table class="table docker-table" id="dockerVolumeTable">
+                  <thead>
+                    <tr>
+                      <th>名称</th>
+                      <th>驱动</th>
+                      <th>作用域</th>
+                      <th>挂载点</th>
+                      <th class="col-actions">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dockerVolumeBody">
+                    <tr class="skeleton-row"><td colspan="5"><span class="skeleton skeleton-line"></span></td></tr>
+                    <tr class="skeleton-row"><td colspan="5"><span class="skeleton skeleton-line short"></span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 网络 -->
+            <div class="docker-pane" data-dpane="networks" hidden>
+              <div class="docker-toolbar">
+                <label class="docker-search docker-search-wide">
+                  <svg class="icon" aria-hidden="true"><use href="#i-network"></use></svg>
+                  <input type="text" id="dockerNetworkName" placeholder="网络名称" autocomplete="off">
+                </label>
+                <select class="docker-select" id="dockerNetworkDriver" aria-label="网络驱动">
+                  <option value="bridge">bridge</option>
+                  <option value="host">host</option>
+                  <option value="none">none</option>
+                  <option value="overlay">overlay</option>
+                  <option value="macvlan">macvlan</option>
+                  <option value="ipvlan">ipvlan</option>
+                </select>
+                <button class="btn btn-primary btn-sm" id="dockerNetworkCreate" type="button">
+                  <svg class="icon"><use href="#i-plus"></use></svg>创建网络
+                </button>
+              </div>
+              <div class="docker-form-error" id="dockerNetworkError" hidden></div>
+              <div class="table-wrap">
+                <table class="table docker-table" id="dockerNetworkTable">
+                  <thead>
+                    <tr>
+                      <th>名称</th>
+                      <th>驱动</th>
+                      <th>作用域</th>
+                      <th>网络 ID</th>
+                      <th>属性</th>
+                      <th class="col-actions">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dockerNetworkBody">
+                    <tr class="skeleton-row"><td colspan="6"><span class="skeleton skeleton-line"></span></td></tr>
+                    <tr class="skeleton-row"><td colspan="6"><span class="skeleton skeleton-line short"></span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 用户 -->
+        <section id="view-users" class="view" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <h2>用户列表</h2>
+              <div class="panel-actions">
+                <span class="tag" id="userSummary">-</span>
+                <button class="btn btn-primary btn-sm" id="addUserBtn">
+                  <svg class="icon"><use href="#i-plus"></use></svg>新建用户
+                </button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="table" id="userTable">
+                <thead>
+                  <tr>
+                    <th>用户名</th>
+                    <th>角色</th>
+                    <th>状态</th>
+                    <th>权限位</th>
+                    <th>创建时间</th>
+                    <th class="col-actions">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="userBody">
+                  <tr class="skeleton-row"><td colspan="6"><span class="skeleton skeleton-line"></span></td></tr>
+                  <tr class="skeleton-row"><td colspan="6"><span class="skeleton skeleton-line short"></span></td></tr>
+                  <tr class="skeleton-row"><td colspan="6"><span class="skeleton skeleton-line"></span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination" id="userPager" hidden></div>
+          </div>
+        </section>
+
+        <!-- 审计日志 -->
+        <section id="view-audit" class="view" hidden>
+          <div class="panel">
+            <div class="panel-head">
+              <h2>操作审计</h2>
+              <div class="panel-actions">
+                <span class="tag" id="auditSummary">-</span>
+                <button class="btn btn-ghost btn-sm" id="auditRefreshBtn" type="button">
+                  <svg class="icon"><use href="#i-refresh"></use></svg><span>刷新</span>
+                </button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="table" id="auditTable">
+                <thead>
+                  <tr>
+                    <th>时间</th>
+                    <th>账号</th>
+                    <th>动作</th>
+                    <th>详情</th>
+                    <th>来源 IP</th>
+                  </tr>
+                </thead>
+                <tbody id="auditBody">
+                  <tr class="skeleton-row"><td colspan="5"><span class="skeleton skeleton-line"></span></td></tr>
+                  <tr class="skeleton-row"><td colspan="5"><span class="skeleton skeleton-line short"></span></td></tr>
+                  <tr class="skeleton-row"><td colspan="5"><span class="skeleton skeleton-line"></span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 系统设置 -->
+        <section id="view-settings" class="view" hidden>
+          <div class="panel-grid">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>外观</h2>
+                <span class="tag">即时生效</span>
+              </div>
+              <div class="settings-body">
+                <div class="settings-field">
+                  <span>界面主题</span>
+                  <select class="theme-select" data-theme-picker aria-label="界面主题">
+                    <option value="win7">主题1</option>
+                    <option value="win10">主题2</option>
+                    <option value="win11">主题3</option>
+                    <option value="glass">主题4</option>
+                  </select>
+                </div>
+                <div class="settings-field">
+                  <span>强调色</span>
+                  <div class="accent-picker" id="accentPicker">
+                    <button class="accent-dot" type="button" data-accent="#2f81f7" style="--dot:#2f81f7" title="飞牛蓝" aria-label="飞牛蓝"></button>
+                    <button class="accent-dot" type="button" data-accent="#23c9a4" style="--dot:#23c9a4" title="薄荷青" aria-label="薄荷青"></button>
+                    <button class="accent-dot" type="button" data-accent="#8b5cf6" style="--dot:#8b5cf6" title="星云紫" aria-label="星云紫"></button>
+                    <button class="accent-dot" type="button" data-accent="#f97316" style="--dot:#f97316" title="落日橙" aria-label="落日橙"></button>
+                    <button class="accent-dot" type="button" data-accent="#ef4444" style="--dot:#ef4444" title="珊瑚红" aria-label="珊瑚红"></button>
+                    <button class="accent-dot" type="button" data-accent="#eab308" style="--dot:#eab308" title="琥珀金" aria-label="琥珀金"></button>
+                    <label class="accent-custom" title="自定义强调色">
+                      <input type="color" id="accentColor" value="#2f81f7" aria-label="自定义强调色">
+                      <span>自定义…</span>
+                    </label>
+                    <button class="btn btn-ghost accent-reset" type="button" id="accentReset">恢复默认</button>
+                  </div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-row-text">
+                    <strong>深色 / 浅色模式</strong>
+                    <small>夜间使用深色可减轻眼睛疲劳</small>
+                  </div>
+                  <button class="btn btn-ghost" type="button" data-mode-toggle>
+                    <svg class="icon"><use href="#i-moon"></use></svg><span>切换模式</span>
+                  </button>
+                </div>
+                <p class="settings-hint">主题、强调色与模式偏好保存在当前浏览器的 localStorage 中，换浏览器或清除缓存后需要重新选择。</p>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>账号安全</h2>
+                <span class="tag" id="settingsRoleTag">当前账号</span>
+              </div>
+              <form class="settings-body" id="pwdForm" autocomplete="off" novalidate>
+                <label class="field">
+                  <span>当前密码</span>
+                  <input id="pwdOld" type="password" maxlength="128" autocomplete="current-password" required>
+                </label>
+                <label class="field">
+                  <span>新密码</span>
+                  <input id="pwdNew" type="password" maxlength="128" placeholder="至少 8 位，需包含字母与数字" autocomplete="new-password" required>
+                </label>
+                <label class="field">
+                  <span>确认新密码</span>
+                  <input id="pwdNew2" type="password" maxlength="128" autocomplete="new-password" required>
+                </label>
+                <p class="form-error" id="pwdError" hidden></p>
+                <div class="settings-actions">
+                  <button class="btn btn-primary" id="pwdSubmit" type="submit">更新密码</button>
+                  <span class="settings-hint">修改成功后其他设备的登录状态会立即失效</span>
+                </div>
+              </form>
+            </section>
+          </div>
+
+          <div class="panel-grid">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>服务器信息</h2>
+                <span class="tag">只读</span>
+              </div>
+              <dl class="info-list" id="settingsInfo">
+                <div><dt>主机名</dt><dd>-</dd></div>
+              </dl>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>关于飞牛终端</h2>
+                <span class="tag" id="aboutVersion">-</span>
+              </div>
+              <div class="settings-body">
+                <p class="settings-lead">飞牛终端（fn-desktop-plus）的 NAS 服务端管理后台，负责账号权限、文件读写、分享外链与 Docker 容器编排。</p>
+                <ul class="about-list">
+                  <li><span>通信协议</span><strong>TLS 1.3 · 自签证书</strong></li>
+                  <li><span>数据存储</span><strong>SQLite（WAL）+ AES-256-GCM</strong></li>
+                  <li><span>密码算法</span><strong>Argon2id</strong></li>
+                  <li><span>客户端</span><strong>Qt 6 桌面端 / 浏览器</strong></li>
+                </ul>
+              </div>
+            </section>
+          </div>
+
+          <div class="panel-grid">
+            <section class="panel" id="storageMountPanel">
+              <div class="panel-head">
+                <h2>存储挂载</h2>
+                <span class="tag" id="mountCountTag">加载中…</span>
+              </div>
+              <div class="settings-body">
+                <p class="settings-lead">
+                  把 NAS 上的绝对路径挂载到文件管理的 <strong>/m/&lt;名称&gt;</strong> 下，文件实体不会移动。
+                  首次使用请先到飞牛「设置 → 应用 → 飞牛终端 → 文件夹权限」授予目标目录的读写权限，
+                  否则挂载会因无权限失败（可先勾选「只读挂载」）。
+                </p>
+                <div class="mount-list" id="mountList">
+                  <p class="settings-hint">正在加载挂载点…</p>
+                </div>
+                <div class="mount-form">
+                  <label class="field">
+                    <span>挂载名称</span>
+                    <input id="mountName" type="text" maxlength="64" placeholder="例如 media">
+                  </label>
+                  <label class="field">
+                    <span>NAS 目录（绝对路径）</span>
+                    <span class="mount-path-row">
+                      <input id="mountPath" type="text" placeholder="/vol1/1000/media">
+                      <button class="btn btn-ghost" type="button" id="mountBrowseBtn">浏览…</button>
+                    </span>
+                  </label>
+                  <label class="mount-check">
+                    <input type="checkbox" id="mountReadonly">
+                    <span>只读挂载（没有写入权限时勾选）</span>
+                  </label>
+                  <p class="form-error" id="mountError" hidden></p>
+                  <div class="settings-actions">
+                    <button class="btn btn-primary" type="button" id="mountAddBtn">添加挂载</button>
+                    <button class="btn btn-ghost" type="button" id="mountAutoBtn">自动挂载 /vol1</button>
+                    <button class="btn btn-ghost" type="button" id="mountRefreshBtn">刷新</button>
+                  </div>
+                  <p class="settings-hint">自动挂载会扫描 /vol1 下所有可读的非系统目录并逐个挂载；没有出现任何目录说明应用还没有拿到文件夹权限。</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- 容器详情抽屉 -->
+  <div class="docker-drawer-mask" id="dockerDrawerMask" hidden></div>
+  <aside class="docker-drawer" id="dockerDrawer" role="dialog" aria-modal="true" aria-labelledby="dockerDrawerTitle" hidden>
+    <div class="docker-drawer-head">
+      <div class="docker-drawer-heading">
+        <h3 id="dockerDrawerTitle">容器详情</h3>
+        <p class="docker-drawer-sub" id="dockerDrawerSub"></p>
+      </div>
+      <button class="icon-btn" id="dockerDrawerClose" type="button" aria-label="关闭详情">
+        <svg class="icon"><use href="#i-close"></use></svg>
+      </button>
+    </div>
+    <div class="docker-drawer-body" id="dockerDrawerBody"></div>
+  </aside>
+
+  <div id="modalRoot" class="modal-root" hidden>
+    <div class="modal-mask" data-close="1"></div>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3 id="modalTitle">提示</h3>
+        <button class="icon-btn" id="modalClose" aria-label="关闭">
+          <svg class="icon"><use href="#i-close"></use></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot" id="modalFoot"></div>
+    </div>
+  </div>
+
+  <div id="fileMenu" class="file-menu" role="menu" hidden></div>
+
+  <div id="toastRoot" class="toast-root" aria-live="polite"></div>
+
+  <script src="/app.js"></script>
+  <script src="/files.js"></script>
+  <script src="/shares.js"></script>
+  <script src="/docker-view.js"></script>
+  <script src="/settings.js"></script>
+</body>
+</html>

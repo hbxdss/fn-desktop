@@ -1,0 +1,164 @@
+#!/bin/bash
+# =============================================================================
+# 飞牛终端（fnos-terminal）服务入口
+#   start   ：准备数据目录 → 定位 Node 运行时 → 前台运行 app/server.js
+#   stop    ：读取 pid 文件并优雅结束进程
+#   status  ：进程存活返回 0，否则返回 3（fnOS 应用中心约定）
+#
+# 说明：不依赖系统 PATH 里一定有 node，优先使用 FPK 内置的 runtime/node，
+#       其次在常见安装位置查找，全部失败时写中文错误日志并以非 0 退出。
+# =============================================================================
+set -u
+
+PKG_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+VAR_DIR="${TRIM_PKGVAR:-${PKG_DIR}/var}"
+
+# 应用文件位置随 fnOS 版本/安装方式不同：
+#   ${PKG_DIR}/target  —— 应用中心安装（app.tgz 解包到 target 指向的目录）
+#   ${PKG_DIR}/app     —— 手工部署
+#   ${PKG_DIR}         —— 兜底
+APP_DIR=""
+for candidate in "${PKG_DIR}/target" "${PKG_DIR}/app" "${PKG_DIR}"; do
+    if [ -f "${candidate}/server.js" ]; then
+        APP_DIR="${candidate}"
+        break
+    fi
+done
+[ -n "${APP_DIR}" ] || APP_DIR="${PKG_DIR}/target"
+
+DATA_DIR="${VAR_DIR}/data"
+FILES_ROOT="${DATA_DIR}/files"
+PID_FILE="${VAR_DIR}/app.pid"
+LOG_FILE="${VAR_DIR}/app.log"
+PORT="${FNOS_PORT:-59120}"
+HOST="${FNOS_HOST:-0.0.0.0}"
+
+mkdir -p "${VAR_DIR}" "${DATA_DIR}" "${FILES_ROOT}" 2>/dev/null
+
+log() {
+    printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >> "${LOG_FILE}" 2>&1
+}
+
+fatal() {
+    log "错误：$*"
+    printf '飞牛终端启动失败：%s\n' "$*" >&2
+    exit 1
+}
+
+is_alive() {
+    local pid="${1:-}"
+    [ -n "${pid}" ] && kill -0 "${pid}" 2>/dev/null
+}
+
+read_pid() {
+    if [ -f "${PID_FILE}" ]; then
+        head -n 1 "${PID_FILE}" 2>/dev/null | tr -d '[:space:]'
+    fi
+}
+
+# 依次尝试：显式指定 → 内置运行时 → PATH → 常见安装位置
+# 需要 Node.js 22.7 及以上（内置 Argon2id，见 app/password.js）；若只有更低版本，
+# 会退回 npm 的 argon2 原生模块，但部分沙箱运行时会段错误，因此优先内置运行时。
+detect_node() {
+    local candidate
+    for candidate in "${FNOS_NODE_BIN:-}" "${APP_DIR}/runtime/node" "${PKG_DIR}/runtime/node" "$(command -v node 2>/dev/null)" \
+        /usr/bin/node /usr/local/bin/node /opt/bin/node \
+        /vol1/@appcenter/nodejs/bin/node /vol1/@appcenter/node/bin/node; do
+        [ -n "${candidate}" ] || continue
+        [ -x "${candidate}" ] || continue
+        if "${candidate}" -e 'const v=process.versions.node.split(".").map(Number);process.exit((v[0]>22||(v[0]===22&&v[1]>=7))?0:1)' 2>/dev/null; then
+            printf '%s' "${candidate}"
+            return 0
+        fi
+    done
+    return 1
+}
+
+do_start() {
+    local pid
+    pid="$(read_pid)"
+    if is_alive "${pid}"; then
+        log "服务已在运行（pid=${pid}），本次启动跳过"
+        exit 0
+    fi
+    rm -f "${PID_FILE}" 2>/dev/null
+
+    [ -f "${APP_DIR}/server.js" ] || fatal "缺少服务端入口 ${APP_DIR}/server.js"
+    [ -d "${APP_DIR}/node_modules" ] || fatal "缺少依赖目录 ${APP_DIR}/node_modules，请重新安装"
+
+    local node_bin
+    node_bin="$(detect_node)" || fatal "未找到可用的 Node.js 运行时（需要 22.7 或更高版本）"
+    log "===== 启动 ====="
+    log "Node 运行时：${node_bin} ($("${node_bin}" -v 2>/dev/null))"
+    log "数据目录：${DATA_DIR}"
+
+    export FNOS_DATA_DIR="${DATA_DIR}"
+    export FNOS_FILES_ROOT="${FILES_ROOT}"
+    export FNOS_PORT="${PORT}"
+    export FNOS_HOST="${HOST}"
+    export NODE_ENV="production"
+
+    cd "${APP_DIR}" || fatal "无法进入目录 ${APP_DIR}"
+    # fnOS 应用中心要求 start 立即返回，否则状态会卡在 starting。
+    # 子 shell 内使用 exec，进程号保持不变，因此 $! 就是 node 的 pid，stop 可直接使用。
+    ( exec "${node_bin}" server.js >> "${LOG_FILE}" 2>&1 ) &
+    local child=$!
+    printf '%s\n' "${child}" > "${PID_FILE}"
+    log "监听 ${HOST}:${PORT}（仅 TLS 1.3），pid=${child}"
+    sleep 1
+    if ! is_alive "${child}"; then
+        rm -f "${PID_FILE}" 2>/dev/null
+        fatal "进程启动后立即退出，请查看日志 ${LOG_FILE}"
+    fi
+    exit 0
+}
+
+do_stop() {
+    local pid
+    pid="$(read_pid)"
+    if ! is_alive "${pid}"; then
+        rm -f "${PID_FILE}" 2>/dev/null
+        log "服务未在运行"
+        exit 0
+    fi
+    log "===== 停止 pid=${pid} ====="
+    kill -TERM "${pid}" 2>/dev/null
+    local i=0
+    while is_alive "${pid}" && [ "${i}" -lt 20 ]; do
+        sleep 0.5
+        i=$((i + 1))
+    done
+    if is_alive "${pid}"; then
+        log "进程未响应 TERM，强制结束"
+        kill -KILL "${pid}" 2>/dev/null
+    fi
+    rm -f "${PID_FILE}" 2>/dev/null
+    exit 0
+}
+
+do_status() {
+    if is_alive "$(read_pid)"; then
+        exit 0
+    fi
+    exit 3
+}
+
+case "${1:-start}" in
+start)
+    do_start
+    ;;
+stop)
+    do_stop
+    ;;
+status)
+    do_status
+    ;;
+restart)
+    do_stop
+    do_start
+    ;;
+*)
+    printf '用法：%s {start|stop|status|restart}\n' "$0" >&2
+    exit 1
+    ;;
+esac

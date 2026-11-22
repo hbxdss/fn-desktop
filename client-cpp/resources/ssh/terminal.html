@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SSH Terminal</title>
+<link rel="stylesheet" href="xterm.css">
+<style>
+  :root { --term-bg: #0d1117; --term-fg: #c9d1d9; --term-sel: rgba(88,166,255,.30); }
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--term-bg); }
+  #host { position: absolute; inset: 0; background: var(--term-bg); }
+  .term-wrap { position: absolute; inset: 0; display: none; box-sizing: border-box; padding: 6px 4px 4px 10px; }
+  .term-wrap.active { display: block; }
+  .xterm { height: 100%; }
+  .xterm .xterm-viewport { background: transparent !important; scrollbar-width: thin; }
+  .xterm-viewport::-webkit-scrollbar { width: 10px; }
+  .xterm-viewport::-webkit-scrollbar-thumb { background: #3a4048; border-radius: 5px; }
+  .xterm-viewport::-webkit-scrollbar-thumb:hover { background: #4d545f; }
+  .xterm-viewport::-webkit-scrollbar-track { background: transparent; }
+</style>
+</head>
+<body>
+<div id="host"></div>
+
+<script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+<script src="xterm.js"></script>
+<script src="addon-fit.js"></script>
+<script src="addon-search.js"></script>
+<script src="addon-unicode11.js"></script>
+<script src="addon-web-links.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const host = document.getElementById("host");
+  const terms = new Map();       // id -> { term, fit, search, wrap }
+  let bridge = null;
+  let activeId = null;
+  let curTheme = null;
+  let curFontSize = 13;
+
+  /* ---------- 编码工具：JS 字符串 / 字节 <-> base64 ---------- */
+  function b64ToBytes(b64) {
+    const bin = atob(b64);
+    const len = bin.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+  function bytesToB64(bytes) {
+    let bin = "";
+    const CHUNK = 0x8000;
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+    }
+    return btoa(bin);
+  }
+  function strToB64(s) {
+    return bytesToB64(new TextEncoder().encode(s));
+  }
+
+  /* ---------- 主题 ---------- */
+  function makeTheme(t) {
+    t = t || {};
+    return {
+      background: t.background || "#0d1117",
+      foreground: t.foreground || "#c9d1d9",
+      cursor: t.cursor || "#58a6ff",
+      cursorAccent: t.background || "#0d1117",
+      selectionBackground: t.selection || "rgba(88,166,255,.30)",
+      black: "#0d1117", red: "#ff7b72", green: "#3fb950", yellow: "#d29922",
+      blue: "#58a6ff", magenta: "#bc8cff", cyan: "#39c5cf", white: "#b1bac4",
+      brightBlack: "#6e7681", brightRed: "#ffa198", brightGreen: "#56d364",
+      brightYellow: "#e3b341", brightBlue: "#79c0ff", brightMagenta: "#d2a8ff",
+      brightCyan: "#56d4dd", brightWhite: "#f0f6fc"
+    };
+  }
+  function applyPageColors(t) {
+    const th = makeTheme(t);
+    document.documentElement.style.setProperty("--term-bg", th.background);
+    document.body.style.background = th.background;
+    host.style.background = th.background;
+  }
+
+  /* ---------- 尺寸上报 ---------- */
+  function reportSize(id) {
+    const t = terms.get(id);
+    if (!t || !bridge) return;
+    if (t.term.cols > 0 && t.term.rows > 0) {
+      bridge.resize(id, t.term.cols, t.term.rows);
+    }
+  }
+  function fitOne(id, report) {
+    const t = terms.get(id);
+    if (!t) return;
+    try { t.fit.fit(); } catch (e) { /* 容器隐藏时忽略 */ }
+    if (report !== false) reportSize(id);
+  }
+
+  /* ---------- 初始化（C++ 在页面加载完成后调用） ---------- */
+  window.sshInit = function (themeJson, fontSize) {
+    try { curTheme = themeJson ? JSON.parse(themeJson) : null; } catch (e) { curTheme = null; }
+    if (fontSize) curFontSize = fontSize;
+    applyPageColors(curTheme);
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+      bridge = channel.objects.bridge;
+      if (bridge && bridge.ready) bridge.ready();
+      if (bridge && bridge.clipboardReady && bridge.clipboardReady.connect) {
+        bridge.clipboardReady.connect(function (text) {
+          if (text && activeId && terms.has(activeId)) terms.get(activeId).term.paste(text);
+        });
+      }
+    });
+  };
+
+  /* ---------- 创建 / 激活 / 关闭 终端实例 ---------- */
+  window.sshCreate = function (id, themeJson, fontSize) {
+    if (terms.has(id)) return;
+    let t = curTheme;
+    try { if (themeJson) t = JSON.parse(themeJson); } catch (e) { /* 保持默认 */ }
+
+    const wrap = document.createElement("div");
+    wrap.className = "term-wrap";
+    host.appendChild(wrap);
+
+    const term = new Terminal({
+      fontFamily: 'Consolas, "Cascadia Mono", "Microsoft YaHei Mono", "Courier New", monospace',
+      fontSize: fontSize || curFontSize,
+      lineHeight: 1.15,
+      cursorBlink: true,
+      cursorStyle: "block",
+      scrollback: 20000,
+      allowProposedApi: true,
+      macOptionIsMeta: true,
+      theme: makeTheme(t)
+    });
+
+    const fit = new FitAddon.FitAddon();
+    const search = new SearchAddon.SearchAddon();
+    term.loadAddon(fit);
+    term.loadAddon(search);
+    try {
+      const uni = new Unicode11Addon.Unicode11Addon();
+      term.loadAddon(uni);
+      term.unicode.activeVersion = "11";
+    } catch (e) { /* 忽略 */ }
+    try {
+      term.loadAddon(new WebLinksAddon.WebLinksAddon(function (ev, uri) {
+        if (bridge && bridge.openUrl) bridge.openUrl(uri);
+        return false;
+      }));
+    } catch (e) { /* 忽略 */ }
+
+    term.open(wrap);
+
+    term.onData(function (data) {
+      if (bridge) bridge.sendData(id, strToB64(data));
+    });
+    term.onBinary(function (data) {
+      const bytes = new Uint8Array(data.length);
+      for (let i = 0; i < data.length; i++) bytes[i] = data.charCodeAt(i) & 0xff;
+      if (bridge) bridge.sendData(id, bytesToB64(bytes));
+    });
+    term.onTitleChange(function (title) {
+      if (bridge) bridge.titleChanged(id, title || "");
+    });
+
+    term.attachCustomKeyEventHandler(function (ev) {
+      if (ev.type !== "keydown") return true;
+      const ctrl = ev.ctrlKey, shift = ev.shiftKey;
+      if (ctrl && shift && (ev.key === "C" || ev.key === "c")) {
+        const sel = term.getSelection();
+        if (sel && bridge) bridge.setClipboard(sel);
+        return false;
+      }
+      if (ctrl && shift && (ev.key === "V" || ev.key === "v")) {
+        if (bridge) bridge.requestClipboard();
+        return false;
+      }
+      if (ctrl && (ev.key === "=" || ev.key === "+")) { window.sshChangeFontSize(1); return false; }
+      if (ctrl && ev.key === "-") { window.sshChangeFontSize(-1); return false; }
+      if (ctrl && ev.key === "0") { window.sshChangeFontSize(0); return false; }
+      return true;
+    });
+
+    terms.set(id, { term: term, fit: fit, search: search, wrap: wrap });
+  };
+
+  window.sshActivate = function (id, doFit) {
+    activeId = id;
+    terms.forEach(function (v, k) { v.wrap.classList.toggle("active", k === id); });
+    const t = terms.get(id);
+    if (!t) return;
+    if (doFit !== false) {
+      setTimeout(function () {
+        fitOne(id, true);
+        try { t.term.focus(); } catch (e) { /* 忽略 */ }
+      }, 30);
+    } else {
+      try { t.term.focus(); } catch (e) { /* 忽略 */ }
+    }
+  };
+
+  window.sshFit = function (id, report) { fitOne(id, report); };
+
+  window.sshWriteB64 = function (id, b64) {
+    const t = terms.get(id);
+    if (!t || !b64) return;
+    t.term.write(b64ToBytes(b64));
+  };
+  window.sshWrite = function (id, text) {
+    const t = terms.get(id);
+    if (t) t.term.write(text);
+  };
+  window.sshClose = function (id) {
+    const t = terms.get(id);
+    if (!t) return;
+    try { t.term.dispose(); } catch (e) { /* 忽略 */ }
+    t.wrap.remove();
+    terms.delete(id);
+    if (activeId === id) activeId = null;
+  };
+  window.sshClear = function (id) {
+    const t = terms.get(id);
+    if (t) { try { t.term.clear(); } catch (e) { /* 忽略 */ } }
+  };
+  window.sshFocus = function (id) {
+    const t = terms.get(id);
+    if (t) { try { t.term.focus(); } catch (e) { /* 忽略 */ } }
+  };
+  window.sshSearch = function (id, text, forward) {
+    const t = terms.get(id);
+    if (!t) return;
+    try {
+      if (!text) { t.search.clearDecorations(); return; }
+      if (forward) t.search.findNext(text); else t.search.findPrevious(text);
+    } catch (e) { /* 忽略 */ }
+  };
+  window.sshChangeFontSize = function (delta) {
+    if (!activeId || !terms.has(activeId)) return;
+    const t = terms.get(activeId);
+    const cur = t.term.options.fontSize || 13;
+    let next = (delta === 0) ? 13 : Math.max(8, Math.min(32, cur + delta));
+    t.term.options.fontSize = next;
+    curFontSize = next;
+    setTimeout(function () { fitOne(activeId, true); }, 20);
+  };
+  window.sshSetTheme = function (themeJson) {
+    try { curTheme = themeJson ? JSON.parse(themeJson) : null; } catch (e) { curTheme = null; }
+    const th = makeTheme(curTheme);
+    applyPageColors(curTheme);
+    terms.forEach(function (v) { v.term.options.theme = th; });
+  };
+  window.sshSetFontSize = function (px) {
+    curFontSize = px;
+    terms.forEach(function (v) { v.term.options.fontSize = px; });
+    if (activeId) setTimeout(function () { fitOne(activeId, true); }, 20);
+  };
+
+  /* ---------- 尺寸变化：只对活动标签做 fit，避免隐藏容器算错 ---------- */
+  const ro = new ResizeObserver(function () {
+    if (activeId && terms.has(activeId)) fitOne(activeId, true);
+  });
+  ro.observe(host);
+  window.addEventListener("resize", function () {
+    if (activeId && terms.has(activeId)) fitOne(activeId, true);
+  });
+})();
+</script>
+</body>
+</html>

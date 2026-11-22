@@ -1,0 +1,4 @@
+#!/bin/bash
+# 升级完成回调：与首次安装一致，补齐目录并校验依赖
+DIR="$(cd "$(dirname "$0")" && pwd)"
+exec bash "${DIR}/install_callback"

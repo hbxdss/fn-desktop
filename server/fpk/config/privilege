@@ -1,0 +1,9 @@
+{
+  "defaults": {
+    "run-as": "package"
+  },
+  "username": "fnos-terminal",
+  "groupname": "fnos-terminal",
+  "join-groups": ["docker"],
+  "allow-run-as-root": false
+}

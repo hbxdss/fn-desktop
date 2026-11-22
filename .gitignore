@@ -1,0 +1,49 @@
+# ===== 构建产物 =====
+build/
+client-cpp/build/
+dist/
+*.exe
+*.dll
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+
+# ===== 旧版 Python 客户端残留 =====
+client/
+__pycache__/
+*.pyc
+
+# ===== 服务端运行时数据（数据库 / 证书 / 用户文件，禁止提交）=====
+server/fpk/app/data/
+server/fpk/*.fpk
+*.db
+*.db-shm
+*.db-wal
+
+# ===== 依赖库自带的测试密钥（会触发 GitHub 密钥扫描）=====
+server/fpk/app/node_modules/ssh2/test/
+
+# ===== 本地工具与 IDE =====
+.vscode/
+.trae/
+.tmp/
+.screenshots/
+
+# ===== 临时文件 =====
+exe_pid.txt
+shot*.png
+UsershbxdssAppDataLocalTempcrop_*.png
+setup_key*.py
+setup_ssh_key.py
+
+# ===== 含真实凭据的测试记录 =====
+FnDesktopPlus_测试报告.md
+FnDesktopPlus_测试报告_详细版.md
+
+# ===== 密钥 / 证书 =====
+*.pem
+*.key
+id_rsa*
+id_ed25519*

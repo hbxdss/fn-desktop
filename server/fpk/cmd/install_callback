@@ -1,0 +1,81 @@
+#!/bin/bash
+# =============================================================================
+# 飞牛终端（fnos-terminal）安装完成回调
+#   - 创建数据目录（700 权限）与文件根目录
+#   - 检查服务端依赖与 Node 运行时
+#   - 诊断信息写入 /tmp/fnos-terminal-install.log 与 ${VAR_DIR}/install.log
+#   - 任何异常都不阻断安装（启动阶段会再次校验并写日志），避免整包回滚
+# =============================================================================
+set -u
+
+SELF_DIR="$(cd "$(dirname "$0")" 2>/dev/null && pwd)"
+PKG_DIR="$(cd "${SELF_DIR}/.." 2>/dev/null && pwd)"
+VAR_DIR="${TRIM_PKGVAR:-${PKG_DIR}/var}"
+
+# 应用文件位置：应用中心安装解到 ${PKG_DIR}/target，手工部署在 ${PKG_DIR}/app
+APP_DIR=""
+for candidate in "${PKG_DIR}/target" "${PKG_DIR}/app" "${PKG_DIR}"; do
+    if [ -f "${candidate}/server.js" ]; then
+        APP_DIR="${candidate}"
+        break
+    fi
+done
+[ -n "${APP_DIR}" ] || APP_DIR="${PKG_DIR}/target"
+
+DATA_DIR="${VAR_DIR}/data"
+FILES_ROOT="${DATA_DIR}/files"
+DEBUG_LOG="/tmp/fnos-terminal-install.log"
+
+log() {
+    printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >> "${DEBUG_LOG}" 2>/dev/null
+    printf '%s\n' "$*"
+}
+
+log "===== install_callback ====="
+log "argv0=$0"
+log "pwd=$(pwd)"
+log "SELF_DIR=${SELF_DIR:-<空>}"
+log "PKG_DIR=${PKG_DIR:-<空>}"
+log "VAR_DIR=${VAR_DIR}"
+log "id=$(id 2>&1)"
+log "TRIM_PKGVAR=${TRIM_PKGVAR:-<未设置>}"
+log "TRIM_PKG_APPDATA=${TRIM_PKG_APPDATA:-<未设置>}"
+env 2>/dev/null | grep -E '^TRIM_' | sort >> "${DEBUG_LOG}" 2>/dev/null
+
+mkdir -p "${VAR_DIR}" "${DATA_DIR}" "${FILES_ROOT}" 2>&1 | while read -r line; do log "mkdir 警告：${line}"; done
+chmod 700 "${DATA_DIR}" 2>/dev/null
+chmod 700 "${FILES_ROOT}" 2>/dev/null
+log "目录创建完成：$(ls -ld "${DATA_DIR}" 2>&1)"
+
+if [ -f "${APP_DIR}/server.js" ]; then
+    log "服务端入口存在：${APP_DIR}/server.js"
+else
+    log "警告：缺少 ${APP_DIR}/server.js（安装仍继续）"
+fi
+
+if [ -d "${APP_DIR}/node_modules" ]; then
+    log "依赖目录存在：$(du -sh "${APP_DIR}/node_modules" 2>/dev/null | cut -f1)"
+else
+    log "警告：缺少 ${APP_DIR}/node_modules（安装仍继续）"
+fi
+
+NODE_BIN=""
+for candidate in "${FNOS_NODE_BIN:-}" "${APP_DIR}/runtime/node" "${PKG_DIR}/runtime/node" "$(command -v node 2>/dev/null)" \
+    /usr/bin/node /usr/local/bin/node /opt/bin/node \
+    /vol1/@appcenter/nodejs/bin/node /vol1/@appcenter/node/bin/node; do
+    [ -n "${candidate}" ] || continue
+    [ -x "${candidate}" ] || continue
+    if "${candidate}" -e 'const v=process.versions.node.split(".").map(Number);process.exit((v[0]>22||(v[0]===22&&v[1]>=7))?0:1)' 2>/dev/null; then
+        NODE_BIN="${candidate}"
+        break
+    fi
+done
+
+if [ -n "${NODE_BIN}" ]; then
+    log "Node 运行时：${NODE_BIN} ($("${NODE_BIN}" -v 2>&1))"
+else
+    log "警告：未找到可用的 Node.js 运行时（需要 22.7+），启动时请检查 ${APP_DIR}/runtime/node"
+fi
+
+log "安装回调结束（端口 59120，仅 TLS 1.3）"
+exit 0

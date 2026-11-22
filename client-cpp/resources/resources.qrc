@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="app.png">app.png</file>
+        <file alias="check.png">check.png</file>
+        <file alias="inject.js">inject.js</file>
+    </qresource>
+    <qresource prefix="/ssh">
+        <file alias="terminal.html">ssh/terminal.html</file>
+        <file alias="xterm.js">ssh/xterm.js</file>
+        <file alias="xterm.css">ssh/xterm.css</file>
+        <file alias="addon-fit.js">ssh/addon-fit.js</file>
+        <file alias="addon-search.js">ssh/addon-search.js</file>
+        <file alias="addon-unicode11.js">ssh/addon-unicode11.js</file>
+        <file alias="addon-web-links.js">ssh/addon-web-links.js</file>
+    </qresource>
+</RCC>

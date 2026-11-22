@@ -1,0 +1,11 @@
+appname               = fnos-terminal
+version               = 1.0.0
+display_name          = 飞牛终端
+desc                  = 飞牛 NAS 终端服务端：HTTPS API、文件管理、Docker 管理与内置 Web 管理后台
+arch                  = x86_64
+source                = thirdparty
+maintainer            = fnos-terminal
+distributor           = fnos-terminal
+service_port          = 59120
+checkport             = true
+protocol              = https

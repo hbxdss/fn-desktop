@@ -1,0 +1,23 @@
+{
+  "name": "fnos-terminal-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "飞牛终端 FPK 服务端：HTTPS API + WebSocket + Web 管理后台",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "cert": "node gen_cert.js",
+    "cert:force": "node gen_cert.js --force",
+    "test": "node test/e2e.js"
+  },
+  "engines": {
+    "node": ">=22.7"
+  },
+  "dependencies": {
+    "argon2": "^0.45.1",
+    "better-sqlite3": "^13.0.3",
+    "dockerode": "^5.0.1",
+    "ws": "^8.22.0"
+  }
+}
+
